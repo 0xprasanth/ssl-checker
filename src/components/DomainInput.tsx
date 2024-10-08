@@ -67,7 +67,7 @@ function DomainInput({}: Props) {
           domain={localStorage.getItem("domain") ?? ""}
         />
       ) : (
-        <p>You have no posts yet.</p>
+        <p>Enter domain or host name to start 😀 </p>
       )}
     </div>
   );

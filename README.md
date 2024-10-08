@@ -24,10 +24,11 @@ This project is a backend service that checks the SSL certificate of a given dom
 
 ## Assumptions and Design Decisions
 
-1. **Self-Signed Certificates**: The service currently identifies self-signed certificates, which can be flagged in the response.
+1. **Domain Validation**: The application assumes that users will input domain names in various formats (with or without 'https://', 'www', etc.). The frontend includes logic to clean and validate these inputs.
 2. **Revocation Status**: The revocation check (e.g., OCSP or CRL) is not yet implemented. It is assumed that most users are interested in the certificate validity period and domain verification.
 3. **Error Handling**: Limited error handling has been implemented for cases such as invalid domain names or failed TLS connections. More detailed error responses could be provided.
-4. **Client Config**: The client config is pre-loaded with default root certificates, which can be extended in the future to support additional or custom certificate authorities (CAs).
+4. **UI Design**: A clean, responsive design was chosen to ensure good user experience across different devices.
+5. 
 
 ## Known Limitations and Areas for Improvement
 

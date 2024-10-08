@@ -32,7 +32,9 @@ function DisplaySSLResult({
     <Card className="max-w-[756px] w-full">
       <CardHeader>
         <CardTitle>Certificate information for {domain}</CardTitle>
-        {/* <CardDescription></CardDescription> */}
+        <CardDescription>
+          certificate information and validation results.
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-start justify-between w-full ">
         <div className="w-full grid grid-cols-2  place-content-evenly gap-10  p-2 border-b border-muted-foreground">
