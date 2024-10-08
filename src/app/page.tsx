@@ -17,9 +17,9 @@ export default async function Home() {
             <span className="text-[hsl(212,100%,70%)]">SSL</span> Certificate
             Checker
           </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+
             <DomainInput />
-          </div>
+
         </div>
       </main>
     </HydrateClient>
