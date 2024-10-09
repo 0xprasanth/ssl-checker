@@ -4,6 +4,8 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
+import { Toast, ToastProvider } from "@/components/ui/toast";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "SSL Checker",
@@ -17,7 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          {/* <ToastProvider> */}
+          {children}
+          <Toaster />
+          {/* </ToastProvider> */}
+        </TRPCReactProvider>
       </body>
     </html>
   );
