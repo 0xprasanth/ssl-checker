@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { api } from "@/trpc/react";
@@ -27,6 +27,8 @@ async function sslCheck(domain: string) {
 }
 
 function DomainInput({}: Props) {
+  const targetDivRef = useRef<HTMLDivElement>(null);
+
   const [domain, setDomain] = useState("");
 
   const { toast } = useToast();
@@ -56,9 +58,22 @@ function DomainInput({}: Props) {
         title: "Success",
         description: `Results fetch Successfully`,
       });
+      handleSuccessEvent();
     }
   };
 
+  const handleSuccessEvent = () => {
+    // Simulate a success event, like form submission
+    console.log("Success event triggered!");
+
+    // Scroll to the target div
+    if (targetDivRef.current) {
+      targetDivRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start", // You can adjust this to 'center', 'end', or 'nearest'
+      });
+    }
+  };
   return (
     <div className="flex items-center justify-center flex-col gap-10">
       <form
@@ -91,10 +106,12 @@ function DomainInput({}: Props) {
         </Button>
       </form>
       {mutation.data ? (
-        <DisplaySSLResult
-          sslCheckResponse={mutation.data}
-          domain={localStorage.getItem("domain") ?? ""}
-        />
+        <div id="result-section" ref={targetDivRef}>
+          <DisplaySSLResult
+            sslCheckResponse={mutation.data}
+            domain={localStorage.getItem("domain") ?? ""}
+          />
+        </div>
       ) : (
         <p>Enter domain or host name to start 😀 </p>
       )}
