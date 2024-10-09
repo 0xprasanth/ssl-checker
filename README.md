@@ -89,15 +89,15 @@ This is a full-stack project using Nextjs as frontend  and built using Rust with
    ```
 
 
-## Testing with Postman (Routes Info)
+## Testing with Thunder Client (Routes Info)
 
 The SSL Certificate Checker provides a single API endpoint for checking SSL certificates. Here are the details for testing this endpoint:
 
 ### API Endpoint
 
-- **Route**: `/check_certificate`
+- **Route**: `/ssl`
 - **Method**: POST
-- **URL**: `http://localhost:8080/check_certificate` (replace `localhost` with your server's IP if hosted elsewhere)
+- **URL**: `http://localhost:800/ssl` (replace `localhost` with your server's IP if hosted elsewhere)
 
 ### Request Body
 
@@ -105,11 +105,11 @@ The request body should be in JSON format with a single field:
 
 ```json
 {
-  "domain": "example.com"
+  "domain": "google.com"
 }
 ```
 
-Replace `example.com` with the domain you want to check.
+Replace `google.com` with the domain you want to check.
 
 ### Response Example
 
@@ -117,11 +117,11 @@ A successful response will return a JSON object containing details about the SSL
 
 ```json
 {
-  "validity_status": true,
-  "expiration_date": "2024-12-31T23:59:59Z",
-  "issuer": "CN=Example CA, O=Example Org, C=US",
-  "subject": "CN=example.com, O=Example Org, C=US",
-  "valid_for_domain": true,
+  "validity": true,
+  "expiration_date": "Tue, 17 Dec 2024 02:46:04 +0000",
+  "issuer": "C=US, O=Google Trust Services, CN=WR2",
+  "subject": "CN=*.google.com",
+  "is_valid_for_domain": true,
   "ca_valid": false,
   "self_signed": false,
   "revocation_status": "Not implemented"
