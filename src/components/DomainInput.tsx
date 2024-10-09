@@ -6,34 +6,63 @@ import { api } from "@/trpc/react";
 import { LoaderCircle } from "lucide-react";
 import DisplaySSLResult from "./DisplaySSLResult";
 import { validateDomain } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import { SSLCheck } from "@/server/api/routers/sslCheck";
+import { env } from "@/env";
+import { useMutation } from "@tanstack/react-query";
+import { ToastAction } from "./ui/toast";
 
 type Props = {};
 
+async function sslCheck(domain: string) {
+  const resp = await axios.post<SSLCheck>(
+    `${env.NEXT_PUBLIC_BACKEND_API}/ssl`,
+    {
+      domain: domain,
+    }
+  );
+
+  return resp.data;
+}
+
 function DomainInput({}: Props) {
   const [domain, setDomain] = useState("");
-  // const [latestDomainCheck, setLatestDomainCheck] = useState<>()
-  const [latestDomainCheck] = api.sslCheck.getLatestSSLCheck.useSuspenseQuery();
-  const utils = api.useUtils();
-  const sslCheck = api.sslCheck.checker.useMutation({
-    onSuccess: async () => {
-      await utils.sslCheck.invalidate();
-      localStorage.setItem("domain", domain);
+
+  const { toast } = useToast();
+
+  const mutation = useMutation({
+    mutationKey: ["sslcheck"],
+    mutationFn: (domain: string) => sslCheck(domain),
+    onSuccess: () => {
       setDomain("");
     },
   });
-  // useEffect(() => {
 
-  // }, [sslCheck])
-  // console.log(validateDomain(domain));
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const cleanedInput = validateDomain(domain);
+    mutation.mutate(cleanedInput);
+    if (mutation.isError) {
+      toast({
+        title: "Uh oh! Something went wrong.",
+        description: `There was a problem with your request. reason: ${mutation.error}`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+        variant: "destructive",
+      });
+    }
+    if (mutation.isSuccess) {
+      toast({
+        title: "Success",
+        description: `Results fetch Successfully`,
+      });
+    }
+  };
 
   return (
     <div className="flex items-center justify-center flex-col gap-10">
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const cleanedInput = validateDomain(domain);
-          sslCheck.mutate({ domain: cleanedInput });
-        }}
+        onSubmit={(e) => handleSubmit(e)}
         className="flex flex-col gap-4  items-start justify-center border border-white w-full max-w-[576px] p-10 m-10 rounded-xl"
       >
         <h3>Enter URL</h3>
@@ -50,9 +79,9 @@ function DomainInput({}: Props) {
           variant={"ghost"}
           type="submit"
           className="border border-white"
-          disabled={sslCheck.isPending}
+          disabled={mutation.isPending}
         >
-          {sslCheck.isPending ? (
+          {mutation.isPending ? (
             <span className="flex gap-2 items-center justify-center">
               Checking <LoaderCircle className="animate-spin h-4 w-4" />
             </span>
@@ -61,9 +90,9 @@ function DomainInput({}: Props) {
           )}
         </Button>
       </form>
-      {latestDomainCheck ? (
+      {mutation.data ? (
         <DisplaySSLResult
-          sslCheckResponse={latestDomainCheck}
+          sslCheckResponse={mutation.data}
           domain={localStorage.getItem("domain") ?? ""}
         />
       ) : (
