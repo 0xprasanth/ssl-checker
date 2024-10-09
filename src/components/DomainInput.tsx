@@ -28,6 +28,7 @@ async function sslCheck(domain: string) {
 
 function DomainInput({}: Props) {
   const targetDivRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [domain, setDomain] = useState("");
 
@@ -37,12 +38,23 @@ function DomainInput({}: Props) {
     mutationKey: ["sslcheck"],
     mutationFn: (domain: string) => sslCheck(domain),
     onSuccess: () => {
+      localStorage.setItem("domain", domain);
+
       setDomain("");
     },
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (domain.length <= 0) {
+      inputRef.current?.focus();
+      toast({
+        title: "Oh no! You forget something important",
+        description: `Enter domain name to verify the SSL certificate`,
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       const cleanedInput = validateDomain(domain);
       mutation.mutate(cleanedInput);
@@ -97,7 +109,7 @@ function DomainInput({}: Props) {
           value={domain}
           onChange={(e) => setDomain(e.target.value)}
           className="w-full rounded-full px-4 py-2 text-white"
-          required={true}
+          ref={inputRef}
         />
 
         <Button
