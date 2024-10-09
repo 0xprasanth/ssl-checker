@@ -17,6 +17,11 @@ This is a full-stack project using Nextjs as frontend  and built using Rust with
 
 
 ### Key Libraries(frontend):
+- **TanStack Query** is a Powerful asynchronous state management for TS/JS, React, Solid, Vue, Svelte and Angular. It gives hooks for fetching, caching and updating asynchronous data in React
+- **Axios** is a promise-based HTTP Client for node.js and the browser. On the server-side it uses the native node.js http module, while on the client (browser) it uses XMLHttpRequests.
+- **Lucide React:** Icon library for React applications.
+- **Zod**: A TypeScript-first schema declaration and validation library.
+- **Shadcn UI Library**: It is collection of UI re-components and offers ownership and control over the code, allowing you to decide how the components are built and styled.
 
 ### Key Libraries(backend):
 - **Actix-Web**: Chosen for its high-performance, non-blocking capabilities in building Rust web applications.
@@ -34,7 +39,7 @@ This is a full-stack project using Nextjs as frontend  and built using Rust with
 ## Known Limitations and Areas for Improvement
 
 - **Domain Validation**: While the code checks for domain validity using the Subject Alternative Name (SAN) extension, there are edge cases with wildcards and IP addresses that aren't fully handled.
-- **Reovcation Status**: need to implement to track invalid certificates and monitor certificate revocation occurrences.
+- **CRL/OCSP Check**: need to implement to track invalid certificates and monitor certificate revocation occurrences.
 - **Rate Limiting**: A rate limiting mechanism is implemented to avoid abuse of the SSL checker API. This ensures that clients are restricted to a set number of requests per minute or hour to protect the server from being overwhelmed.
 - **View Past Certificate Checks** Add user authentication for tracking personal SSL certificate checks.
 - **Client-Side Hydration** Due to Nextjs's server-side rendering capabilities, when ever the previous request failed then the next request doesn't hydrate to client-side and requires couple of refresh to hydrate the client component
@@ -83,6 +88,46 @@ This is a full-stack project using Nextjs as frontend  and built using Rust with
    cargo run
    ```
 
+
+## Testing with Postman (Routes Info)
+
+The SSL Certificate Checker provides a single API endpoint for checking SSL certificates. Here are the details for testing this endpoint:
+
+### API Endpoint
+
+- **Route**: `/check_certificate`
+- **Method**: POST
+- **URL**: `http://localhost:8080/check_certificate` (replace `localhost` with your server's IP if hosted elsewhere)
+
+### Request Body
+
+The request body should be in JSON format with a single field:
+
+```json
+{
+  "domain": "example.com"
+}
+```
+
+Replace `example.com` with the domain you want to check.
+
+### Response Example
+
+A successful response will return a JSON object containing details about the SSL certificate:
+
+```json
+{
+  "validity_status": true,
+  "expiration_date": "2024-12-31T23:59:59Z",
+  "issuer": "CN=Example CA, O=Example Org, C=US",
+  "subject": "CN=example.com, O=Example Org, C=US",
+  "valid_for_domain": true,
+  "ca_valid": false,
+  "self_signed": false,
+  "revocation_status": "Not implemented"
+}
+```
+
 ## Usage
 
 1. Open the application in your browser (by default, at `http://localhost:3000`).
@@ -95,4 +140,6 @@ This is a full-stack project using Nextjs as frontend  and built using Rust with
 - **Frontend**: Next.js, Tailwind CSS for styling.
 - **Backend**: Rust, HTTPS libraries for certificate validation.
 
+## Loom Video demonstration
 
+See the video demonstration [HERE](https://www.loom.com/share/2bcbc6a39408475291823d6aa6c4d355?sid=d03a623e-f997-48b5-8a26-255ccd8c668a)
