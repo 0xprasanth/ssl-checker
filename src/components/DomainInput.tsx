@@ -43,22 +43,32 @@ function DomainInput({}: Props) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const cleanedInput = validateDomain(domain);
-    mutation.mutate(cleanedInput);
-    if (mutation.isError) {
-      toast({
-        title: "Uh oh! Something went wrong.",
-        description: `There was a problem with your request. reason: ${mutation.error}`,
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-        variant: "destructive",
-      });
-    }
-    if (mutation.isSuccess) {
-      toast({
-        title: "Success",
-        description: `Results fetch Successfully`,
-      });
-      handleSuccessEvent();
+    try {
+      const cleanedInput = validateDomain(domain);
+      mutation.mutate(cleanedInput);
+      if (mutation.isError) {
+        toast({
+          title: "Uh oh! Something went wrong.",
+          description: `There was a problem with your request. reason: ${mutation.error}`,
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+          variant: "destructive",
+        });
+      }
+      if (mutation.isSuccess) {
+        toast({
+          title: "Success",
+          description: `Results fetch Successfully`,
+        });
+        handleSuccessEvent();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Uh oh! Something went wrong.",
+          description: `Error: ${error.message}`,
+          variant: "destructive",
+        });
+      }
     }
   };
 
